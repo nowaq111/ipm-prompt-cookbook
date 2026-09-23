@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Playbook Across the IPM Process — EyeSee</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+
+:root {
+  --es-dark:      #0F0425;
+  --es-dark-2:    #170A34;
+  --es-light:     #F1E9FF;
+  --es-blue-deep: #000AC7;
+  --es-purple:    #7000E0;
+  --es-crimson:   #6E003A;
+  --es-brand:     #FF144F;
+  --es-pink:      #F275FF;
+  --es-sky:       #36AFFF;
+  --es-green:     #1FAF44;
+  --es-white:     #FFFFFF;
+  --card-bg: rgba(241,233,255,0.04);
+  --card-border: rgba(255,255,255,0.10);
+  --card-border-hover: rgba(255,255,255,0.22);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--es-dark);
+  color: var(--es-light);
+  font-family: 'Roboto', Arial, sans-serif;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 60% 40% at 85% 0%, rgba(112,0,224,0.20) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 10% 90%, rgba(0,10,199,0.16) 0%, transparent 55%),
+    var(--es-dark);
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  min-height: 100vh;
+}
+@media (max-width: 900px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar { position: static; height: auto; }
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 28px 20px 28px 28px;
+  border-right: 1px solid var(--card-border);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.sidebar::-webkit-scrollbar { width: 6px; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 6px; }
+
+.es-logo {
+  display: inline-flex;
+  align-items: center;
+  background: var(--es-brand);
+  color: white;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.02em;
+  padding: 8px 18px;
+  border-radius: 50px;
+  width: fit-content;
+}
+.es-logo .dot { color: rgba(255,255,255,0.7); padding: 0 1px; }
+
+.brand-line {
+  font-size: 12px;
+  color: rgba(241,233,255,0.5);
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+}
+
+.nav-group-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(241,233,255,0.45);
+  margin: 4px 0 -8px 4px;
+}
+
+.nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: rgba(241,233,255,0.8);
+}
+.nav-item:hover { background: rgba(255,255,255,0.05); }
+.nav-item.active {
+  background: rgba(255,20,79,0.12);
+  border-color: rgba(255,20,79,0.4);
+  color: var(--es-white);
+}
+.nav-num {
+  width: 24px; height: 24px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+  color: rgba(241,233,255,0.6);
+}
+.nav-item.active .nav-num { background: var(--es-brand); color: white; }
+.nav-count {
+  margin-left: auto;
+  font-size: 11.5px;
+  color: rgba(241,233,255,0.4);
+  background: rgba(255,255,255,0.05);
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+.main {
+  padding: 40px 48px 80px;
+  max-width: 1080px;
+}
+@media (max-width: 900px) { .main { padding: 28px 20px 60px; } }
+
+.page-header { margin-bottom: 28px; }
+.eyebrow-pill {
+  display: inline-block;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--es-sky);
+  background: rgba(54,175,255,0.10);
+  border: 1px solid rgba(54,175,255,0.3);
+  padding: 5px 14px;
+  border-radius: 50px;
+  margin-bottom: 14px;
+}
+h1.title {
+  font-size: clamp(30px, 4vw, 42px);
+  font-weight: 900;
+  margin: 0 0 10px 0;
+  line-height: 1.15;
+}
+p.subtitle {
+  font-size: 16px;
+  color: rgba(241,233,255,0.65);
+  max-width: 660px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 28px 0 8px;
+  align-items: center;
+}
+.search-box {
+  position: relative;
+  flex: 1 1 320px;
+  min-width: 240px;
+}
+.search-box input {
+  width: 100%;
+  padding: 13px 16px 13px 42px;
+  border-radius: 14px;
+  border: 1px solid var(--card-border);
+  background: rgba(255,255,255,0.04);
+  color: var(--es-white);
+  font-family: inherit;
+  font-size: 14.5px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.search-box input:focus { border-color: var(--es-sky); }
+.search-box input::placeholder { color: rgba(241,233,255,0.35); }
+.search-icon {
+  position: absolute;
+  left: 15px; top: 50%; transform: translateY(-50%);
+  width: 16px; height: 16px;
+  color: rgba(241,233,255,0.4);
+  pointer-events: none;
+}
+
+.tag-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.tag-chip {
+  font-size: 12.5px;
+  font-weight: 500;
+  padding: 6px 13px;
+  border-radius: 50px;
+  border: 1px solid var(--card-border);
+  background: rgba(255,255,255,0.03);
+  color: rgba(241,233,255,0.7);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.tag-chip:hover { border-color: var(--card-border-hover); color: var(--es-white); }
+.tag-chip.active {
+  background: var(--es-brand);
+  border-color: var(--es-brand);
+  color: white;
+}
+
+.results-meta {
+  font-size: 13px;
+  color: rgba(241,233,255,0.4);
+  margin: 18px 0 4px;
+}
+.clear-search {
+  color: var(--es-sky);
+  cursor: pointer;
+  text-decoration: underline;
+  margin-left: 6px;
+}
+
+.usecase-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.usecase-card {
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+}
+.usecase-card:hover { border-color: var(--card-border-hover); }
+.usecase-card.open { border-color: rgba(255,20,79,0.35); }
+
+.usecase-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px 22px;
+  cursor: pointer;
+}
+.usecase-chevron {
+  flex-shrink: 0;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--es-sky);
+  transition: transform 0.2s ease, background 0.15s ease;
+  margin-top: 2px;
+}
+.usecase-card.open .usecase-chevron { transform: rotate(180deg); background: rgba(54,175,255,0.15); }
+.usecase-chevron svg { width: 14px; height: 14px; }
+
+.usecase-title-block { flex: 1; min-width: 0; }
+.usecase-title {
+  font-size: 17.5px;
+  font-weight: 700;
+  color: var(--es-white);
+  margin: 0 0 8px 0;
+  line-height: 1.35;
+}
+.usecase-desc {
+  font-size: 14px;
+  color: rgba(241,233,255,0.6);
+  line-height: 1.55;
+  margin: 0 0 10px 0;
+}
+.tool-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tool-tag {
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 4px 11px;
+  border-radius: 50px;
+  color: var(--es-white);
+  white-space: nowrap;
+}
+
+.usecase-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+.usecase-card.open .usecase-body { max-height: 2200px; }
+.usecase-body-inner {
+  padding: 0 22px 24px 68px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+@media (max-width: 640px) { .usecase-body-inner { padding-left: 22px; } }
+
+.body-section-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--es-sky);
+  margin: 0 0 8px 0;
+  display: flex; align-items: center; gap: 8px;
+}
+.body-section-label svg { width: 14px; height: 14px; }
+
+ul.practice-list {
+  margin: 0; padding: 0 0 0 18px;
+  font-size: 14px; line-height: 1.65;
+  color: rgba(241,233,255,0.85);
+}
+ul.practice-list li { margin-bottom: 6px; }
+
+.example-box {
+  background: rgba(255,20,79,0.06);
+  border: 1px solid rgba(255,20,79,0.28);
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(241,233,255,0.92);
+}
+.example-who {
+  font-weight: 700;
+  color: var(--es-pink);
+  margin-right: 4px;
+}
+
+.best-practice-box {
+  background: rgba(31,175,68,0.06);
+  border: 1px solid rgba(31,175,68,0.25);
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(241,233,255,0.9);
+}
+
+.prompt-box {
+  background: var(--es-dark);
+  border: 1px solid rgba(54,175,255,0.25);
+  border-radius: 12px;
+  padding: 14px 16px 14px 30px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--es-sky);
+  position: relative;
+}
+.prompt-box::before {
+  content: '"';
+  font-size: 32px;
+  color: rgba(54,175,255,0.3);
+  position: absolute;
+  top: -4px; left: 8px;
+  font-family: Georgia, serif;
+}
+
+.caution-box {
+  background: rgba(255,255,255,0.03);
+  border: 1px dashed rgba(241,233,255,0.25);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: rgba(241,233,255,0.65);
+}
+
+.no-results {
+  text-align: center;
+  padding: 60px 20px;
+  color: rgba(241,233,255,0.4);
+  font-size: 15px;
+}
+
+.glossary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+.glossary-card {
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  border-radius: 14px;
+  padding: 18px 20px;
+}
+.glossary-tool-name {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--es-white);
+  margin-bottom: 6px;
+  display: flex; align-items: center; gap: 8px;
+}
+.glossary-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.glossary-desc {
+  font-size: 13px;
+  color: rgba(241,233,255,0.6);
+  line-height: 1.55;
+}
+
+.phase-context {
+  background: rgba(112,0,224,0.08);
+  border: 1px solid rgba(112,0,224,0.3);
+  border-radius: 14px;
+  padding: 16px 20px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: rgba(241,233,255,0.8);
+  margin: 20px 0 4px;
+}
+
+/* Onboarding page */
+.onboard-block {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.onboard-card {
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 22px 24px;
+}
+.onboard-card h3 {
+  margin: 0 0 10px 0;
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--es-white);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.onboard-step-num {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: var(--es-brand);
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.onboard-card p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.65;
+  color: rgba(241,233,255,0.75);
+}
+.rule-box {
+  background: rgba(54,175,255,0.07);
+  border: 1px solid rgba(54,175,255,0.3);
+  border-radius: 14px;
+  padding: 18px 22px;
+  font-size: 14px;
+  line-height: 1.65;
+  color: rgba(241,233,255,0.9);
+}
+.rule-box strong { color: var(--es-sky); }
+
+footer.app-footer {
+  margin-top: 50px;
+  padding-top: 20px;
+  border-top: 1px solid var(--card-border);
+  font-size: 12.5px;
+  color: rgba(241,233,255,0.35);
+  line-height: 1.6;
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="es-logo"><span>eye</span><span class="dot">·</span><span>see</span></div>
+    <div class="brand-line">AI Playbook<br>Across the IPM Process</div>
+
+    <div class="nav-group-label">GET STARTED</div>
+    <ul class="nav-list" id="navStart"></ul>
+
+    <div class="nav-group-label">PROCESS PHASES</div>
+    <ul class="nav-list" id="navPhases"></ul>
+
+    <div class="nav-group-label">MORE</div>
+    <ul class="nav-list" id="navExtra"></ul>
+
+    <div style="margin-top:auto; font-size:11.5px; color:rgba(241,233,255,0.3); line-height:1.6;">
+      Real AI workflows from across the IPM team
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="page-header">
+      <span class="eyebrow-pill" id="phaseEyebrow">Phase 1 · Preparation</span>
+      <h1 class="title" id="phaseTitle">Preparation &amp; Kick-off</h1>
+      <p class="subtitle" id="phaseSubtitle"></p>
+    </div>
+
+    <div class="controls" id="controlsBlock">
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" placeholder="Search tasks, tools, or keywords across the whole playbook…">
+      </div>
+    </div>
+    <div class="tag-filter-bar" id="tagFilterBar"></div>
+
+    <div id="phaseContext" class="phase-context" style="display:none;"></div>
+    <div class="results-meta" id="resultsMeta" style="display:none;"></div>
+
+    <div id="onboardGrid" class="onboard-block" style="display:none;"></div>
+    <div class="usecase-grid" id="usecaseGrid"></div>
+
+    <footer class="app-footer">
+      Have a workflow that isn't here yet? Add it next time this playbook is updated — the goal is for it to keep growing as more of the team shares what works.
+    </footer>
+  </main>
+</div>
+
+<script>
+/* ============================================================
+   TOOL DEFINITIONS (standardized)
+============================================================ */
+const TOOLS = {
+  "Copilot":            { color: "#7000E0", desc: "Microsoft 365 Copilot, integrated into Word, Excel and PowerPoint. The most widely used AI tool across the team and every phase of the process." },
+  "Collab Chatbot":      { color: "#36AFFF", desc: "EyeSee's own AI chatbot (internally also called \"Agentic AI\"), built into the Collab platform and trained on EyeSee's business and ways of working. Used across questionnaire wording, translation, executive summaries, and drafting." },
+  "Sales Helper":        { color: "#F275FF", desc: "Internal EyeSee agent (SharePoint → Client Operations). Each POD has its own Sales Helper folder and agent link — no Copilot license or login needed. Best for summarizing and finding patterns across multiple past reports. Always reference the specific folder or report(s) in your prompt, or it may pull in unrelated material." },
+  "EyeSee OED Bot":      { color: "#1FAF44", desc: "EyeSee's dedicated tool for open-ended data (OED) coding and analysis." },
+  "Copilot Agents":      { color: "#7000E0", desc: "Custom Copilot agents built for a specific recurring task (e.g. drafting a report type, or a \"researcher\"/\"analyst\" persona). Still being piloted rather than rolled out team-wide." },
+  "Microsoft Teams transcription": { color: "#000AC7", desc: "Built-in Microsoft Teams meeting transcription and Copilot recap, used for capturing notes and summaries from calls. (Fathom is being piloted separately and isn't part of the standard toolkit yet.)" }
+};
+
+function toolTagHTML(name){
+  const t = TOOLS[name] || { color: "#555" };
+  return `<span class="tool-tag" style="background:${t.color}">${name}</span>`;
+}
+
+/* ============================================================
+   PHASE + TASK DATA
+   Every example below is grounded in one of: the internal AI usage
+   survey, the "AI Talks" knowledge-sharing sessions (S1 – April,
+   S2 – June) and their supporting slides, the "AI in Insight" working
+   session, or colleagues' written notes. Examples are attributed to
+   the client/project, not to individuals.
+============================================================ */
+const PHASES = [
+  {
+  id: "phase1",
+  eyebrow: "Phase 1 · Preparation",
+  name: "Preparation & Kick-off",
+  subtitle: "Getting up to speed on the category, client and brand before work starts, and setting the kick-off meeting up for success.",
+  context: "The most consistently-used AI phase across the team — almost everyone does some version of this, especially for less familiar categories or markets.",
+  useCases: [
+    {
+      title: "Research a category or brand before a brief or kick-off",
+      tools: ["Copilot", "Collab Chatbot"],
+      desc: "Getting quickly up to speed on a category, brand or market you don't know well yet — before writing a questionnaire or walking into a kick-off.",
+      how: [
+        "Ask for an overview of the category: key brands, recent trends, developments, barriers and competition.",
+        "Ask specifically about a brand's positioning, communication, target audience and brand pillars.",
+        "For strategic studies, ask for a wider view — customer habits and major brands in that specific market.",
+        "Treat it like a conversation with an expert: ask follow-up questions and ask for interpretation, not just facts."
+      ],
+      example: { text: "For projects in less familiar markets — the US market comes up often — a common approach is asking AI for an overview of the market, category and brand: recent brand-share data, communication, target audience, and brand pillars, then using that to prep for the kick-off and questionnaire. Skipping this step has real cost: on one project, a brand initially assumed to be a competitor turned out to be owned by the client's own parent company — caught only through this kind of check — which changed the whole framing of the story, from a successful pull away from competitors to cannibalization of the client's own portfolio." },
+      bestPractice: "Ask for opinions and implications (\"what might this mean for the brief?\"), not just facts you could look up yourself. Also check company/brand ownership specifically — getting this wrong can flip the entire framing of a finding.",
+      prompt: "I need to understand the business context of [Client] since they'll be running a [study type] for their [Brand]. What can you tell me about [Client] and [Brand] in [market]? What's the market landscape in this category, and what's the general perception of the category?"
+    },
+    {
+      title: "Brief yourself on a client's history before kick-off",
+      tools: ["Sales Helper", "Collab Chatbot"],
+      desc: "Getting up to speed not just on the category, but on everything EyeSee already knows about this specific client — past studies, recurring patterns, and questionnaire conventions.",
+      how: [
+        "Upload past reports for this specific client into Sales Helper and ask for a summary of what was done before, what's already known, and any patterns across studies and results.",
+        "Separately, ask the chatbot to review all previous questionnaires for the same client and list what's mandatory (the client always asks for it), what's optional, and what's been custom to a specific project."
+      ],
+      example: { text: "Before a kick-off, past reports for the client are uploaded into Sales Helper with a request for a summary of prior work and recurring patterns — sometimes generalized to the wider category for a \"commercial teaching\" view, sometimes kept client-specific. Separately, the chatbot is asked to scan all previous questionnaires for that client and sort out what's always required versus what's optional or one-off." },
+      bestPractice: "This is worth doing for any repeat client, not just new or unfamiliar ones — it surfaces client-specific conventions a single past project wouldn't show.",
+      prompt: null
+    },
+    {
+      title: "Turn a brief into a kick-off meeting checklist",
+      tools: ["Copilot", "Collab Chatbot"],
+      desc: "Converting a brief and your own research into a ready-to-use kick-off agenda.",
+      how: [
+        "Feed AI the brief plus your initial research.",
+        "Ask it to generate a checklist of discussion points, key questions and areas needing clarification.",
+        "Use it ahead of the meeting whenever questions come up after reading the brief."
+      ],
+      example: { text: "A common pattern: do the research first, then ask Copilot or the chatbot to prepare a kick-off checklist based on the brief and the findings." },
+      bestPractice: "Do the research first, then hand over the brief + findings together — the checklist is far more useful when it's grounded in what you already know.",
+      prompt: "Based on this brief and my research notes below, prepare a kick-off meeting checklist: agenda, key discussion points, and open questions or areas needing clarification."
+    },
+    {
+      title: "Summarize an internal or client call",
+      tools: ["Copilot", "Microsoft Teams transcription"],
+      desc: "Capturing what was discussed and agreed on a call, so the team can align afterwards without everyone re-listening.",
+      how: [
+        "Use Teams transcription and Copilot recap to summarize what was discussed and agreed.",
+        "Circulate the summary to align colleagues who weren't on the call.",
+        "Keep it as a personal reference for later phases of the project."
+      ],
+      example: { text: "Meeting notes and summaries are used specifically to align the team after client calls, and as a personal reminder later in the project." },
+      bestPractice: "Share the summary with the wider pod, not just yourself — it's specifically useful for keeping the team aligned.",
+      prompt: null
+    }
+  ]
+  },
+  {
+  id: "phase2",
+  eyebrow: "Phase 2 · Set-up",
+  name: "Set-Up",
+  subtitle: "Drafting and quality-checking the questionnaire, preparing study materials, and handling client communication before fieldwork launches.",
+  context: "The phase with the richest set of distinct workflows — drafting, QA-checking against the brief, translation review, and material prep are all handled differently.",
+  useCases: [
+    {
+      title: "Draft and reword questionnaire items",
+      tools: ["Collab Chatbot", "Copilot"],
+      desc: "Getting help writing or improving specific questions, answer lists and instructions in a questionnaire.",
+      how: [
+        "Ask how to approach a tricky business question from the brief.",
+        "Ask for lists of answer options for standard question types — e.g. occasions for consumption, purchase drivers.",
+        "Ask for alternative phrasing of statements, attributes or instructions, especially for overly long or unfriendly questions.",
+        "Ask for additional questions aligned with the research objectives."
+      ],
+      example: { text: "The chatbot is used to speed up drafting and refining survey questions, and to list out answer options for recurring question types like occasions for consumption or purchase drivers, instead of writing every list from scratch." },
+      bestPractice: "Draft the questionnaire structure yourself first, then use AI specifically for wording and option lists — not to design the questionnaire from scratch.",
+      prompt: null
+    },
+    {
+      title: "Check a questionnaire against the brief and EyeSee standards",
+      tools: ["Copilot", "Collab Chatbot"],
+      desc: "A dedicated QA pass — comparing a drafted questionnaire against the client brief to catch gaps or off-brief content, separate from drafting itself. Especially useful for non-standard questionnaires with a lot of rules, jumps and criteria.",
+      how: [
+        "Give the tool the questionnaire plus the client brief and ask it to compare a detailed human review against its own read.",
+        "Ask it to flag anything that doesn't match the brief, and to check screener/recruitment criteria for being unrealistically strict.",
+        "Ask for extra question ideas relevant to the category or objectives, where sections feel thin."
+      ],
+      example: { text: "On one project (FUJIFILM, Digi project), a side-by-side of a detailed human QNR review against a bot review found the same warnings — including a screener criterion that turned out to be too strict, later confirmed in field with only ~1% incidence — plus useful new question ideas for the usage & attitudes section. The bot doesn't know client specifics or EyeSee's technical limitations, but was otherwise a strong addition to the human review." },
+      bestPractice: "Run this as its own pass after the questionnaire is drafted — it reliably catches over-strict screener logic before it costs you incidence rate in field.",
+      prompt: null
+    },
+    {
+      title: "Review and adjust a translated questionnaire",
+      tools: ["Collab Chatbot", "Copilot"],
+      desc: "Updating an already-translated questionnaire when small changes come in after the agency has delivered the 'final' version — without re-translating from scratch — and checking a translated document for grammar issues.",
+      how: [
+        "Give the tool both the old, already-verified translation of a statement and the new, updated English version.",
+        "Ask it to translate only the update, matching the grammar and style of the already-verified version — not a fresh translation.",
+        "Separately, upload the translated questionnaire document and ask whether there are any grammatical mistakes or meaningless parts."
+      ],
+      example: { text: "On a multi-language claims screener (Opella project, rolled out across markets including Germany, North Macedonia, France, Poland, Portugal, Hungary, Romania and Italy), a small wording update needed to flow into every language version. The approach: give the tool the old verified translation and the corrected English version together and ask only for an updated translation in that style — then separately upload the resulting questionnaire and ask it to flag grammatical errors or meaningless segments." },
+      bestPractice: "Never ask the tool to translate from scratch when a verified translation already exists — ask it to adapt within that established style instead.",
+      prompt: "This is the old [language] translation: [old text]. And this is the correct English version: [new text]. Give me the correct [language] translation."
+    },
+    {
+      title: "Extract and organize product or pricing data from client materials",
+      tools: ["Copilot"],
+      desc: "Turning messy client-supplied materials (like scanned shelf PDFs) into a usable, structured spreadsheet.",
+      how: [
+        "Upload the client's PDF (e.g. shelf images or product lists) and ask AI to extract the data into Excel.",
+        "Ask it to compare all products across sources and split them into a sheet of unique items and a sheet of repeated ones.",
+        "For pricing, ask it to search using product codes to find current prices."
+      ],
+      example: { text: "A client sent 5 shelves as PDFs. AI was asked to extract the data into Excel, compare all products, and build a new sheet showing which were unique versus repeated across the shelves — then to search using product codes to find prices for all of them. On another project, when a client failed to provide prices for some products, a first estimate was built manually from known prices and basic statistics, then AI was asked to source prices for the rest from the internet and average them into one final suggested price, rounded to match the client's usual pricing pattern (e.g. ending in .99)." },
+      bestPractice: "Ask for the comparison structure you actually need (unique vs. repeated, by product code) rather than a flat data dump — it saves a manual re-sort afterwards.",
+      prompt: "Extract the product list, prices and descriptions from this PDF into an Excel table. Then compare it against [other source] and split the results into two sheets: products that appear in both, and products unique to each."
+    },
+    {
+      title: "Draft or polish client emails",
+      tools: ["Copilot", "Collab Chatbot", "Sales Helper"],
+      desc: "Making client communication clearer and better-toned — especially for difficult questions or non-native-English writers.",
+      how: [
+        "Write your own draft first, then ask AI to check grammar, tone and clarity.",
+        "For difficult client questions, draft your response and ask AI to check nothing important is missing.",
+        "Non-native speakers: draft in your own language, then ask AI to translate and polish into natural English."
+      ],
+      example: { text: "A recurring pattern for non-native English speakers: draft the email in your own language first, then ask Copilot or the chatbot to translate and polish it — this keeps the focus on the message rather than the language." },
+      bestPractice: "Always write the substance yourself. Not everyone on the team uses AI for client emails at all — some deliberately avoid it because it can read as impersonal, and only use AI to sanity-check a specific explanation, writing the surrounding message themselves.",
+      prompt: "Here is my draft reply to a client's question: [draft]. Please check that nothing important is missing, and make the tone clear, concise and natural."
+    },
+    {
+      title: "Scan for adverse-event or pharmacovigilance mentions",
+      tools: ["Copilot"],
+      desc: "Checking open-ended or free-text responses for anything that needs to be flagged for pharmacovigilance, and sorting what's found by priority.",
+      how: [
+        "Upload the adverse-event (AE) definitions together with the Excel data and ask AI to scan for anything matching them.",
+        "Ask it to organize whatever it finds into groups based on priority, rather than a single flat list."
+      ],
+      example: { text: "For projects with a pharmacovigilance requirement, AE definitions are uploaded alongside the data file and AI is asked to scan open-ended responses for matches, then group whatever it finds by priority level." },
+      bestPractice: "Give it the actual AE definitions as context, not just the word \"adverse event\" — it scans far more reliably against a defined list.",
+      prompt: null
+    }
+  ]
+  },
+  {
+  id: "phase3",
+  eyebrow: "Phase 3 · Fieldwork",
+  name: "Fieldwork",
+  subtitle: "AI use during live data collection.",
+  context: "The lowest-adoption phase in the whole process — most respondents reported no AI use here at all.",
+  useCases: [
+    {
+      title: "Communication related to fieldwork",
+      tools: ["Copilot"],
+      desc: "Light, occasional use for internal or external messages while a study is in field — the same polish-and-clarity pattern used for emails elsewhere.",
+      how: [
+        "Used the same way as client email drafting: write the message, then ask AI to check tone and clarity."
+      ],
+      example: null,
+      bestPractice: "There's no established practice here yet — this is an open area for the team to develop, not a proven workflow.",
+      prompt: null
+    }
+  ]
+  },
+  {
+  id: "phase4",
+  eyebrow: "Phase 4 · Data Analysis",
+  name: "Data Analysis & Insights",
+  subtitle: "Making sense of Excel results and open-ended responses — and using AI as a second opinion on your own analysis, not a first one.",
+  context: "A clear, shared rule across the team: do your own analysis first, then use AI to check what you might have missed. AI runs second, never first.",
+  useCases: [
+    {
+      title: "Get a second read on your own analysis",
+      tools: ["Copilot", "Collab Chatbot"],
+      desc: "After finishing your own read of the results, using AI to check whether it spots anything you missed — particularly across specific cuts or breaks of the data.",
+      how: [
+        "Finish your own analysis first — this always comes before the AI pass.",
+        "Give the data to AI and ask whether it detects patterns you missed, especially within specific breaks/cuts.",
+        "Review what it finds and decide whether you agree before using it."
+      ],
+      example: { text: "A common check: after finishing the analysis, give the data to Copilot to see if it detects patterns you missed, then decide whether you agree with what it found before using any of it. Some also run this per data cut — checking a specific split separately — and use it to double-check a hypothesis before writing it up. It's common to end up disagreeing with the tool's final take, but the check still catches things worth a second look." },
+      bestPractice: "Never let this replace your first pass — it's a check on your own read, not a substitute for it. Start with your own understanding of the data.",
+      prompt: null
+    },
+    {
+      title: "Turn a messy list into a structured summary table",
+      tools: ["Copilot"],
+      desc: "Using AI to build a categorized table from an unstructured list — for example, grouping many different SKUs into a smaller set of categories with reasons.",
+      how: [
+        "Give AI the raw list with percentages (e.g. chosen SKUs) plus a reference list to categorize against (e.g. a subbrand list).",
+        "Ask it to extract the most-mentioned groups (with %), the items under each, and the likely reasons for each choice.",
+        "Expect to do a manual follow-up pass on the \"reasons\" column — this part usually needs more prompting to get right."
+      ],
+      example: { text: "For a findability task with no single correct SKU (e.g. \"moisturizing shampoo\"), the list of chosen SKUs with percentages and a subbrand reference list were given to Copilot, with a request to extract the most-mentioned brands and subbrands with reasons. It produced a usable table for interpretation directly, though the reasoning column needed more work." },
+      bestPractice: "Give the tool a reference taxonomy to categorize against (not just raw text) — it produces a usable table on the first pass instead of a vague summary.",
+      prompt: "Here is a list of SKUs mentioned with their percentages, and a reference list of subbrands. Extract the most-mentioned brands (with %), the subbrands under each, and the most likely reasons each was chosen."
+    },
+    {
+      title: "Code open-ended responses quickly under time pressure",
+      tools: ["EyeSee OED Bot", "Copilot"],
+      desc: "Comparing the EyeSee OED Bot against Copilot when open-ended coding needs to happen fast — for example, delivering preliminary results on partial sample.",
+      how: [
+        "Run the same open-ended question through both the EyeSee OED Bot and Copilot.",
+        "Where the OED Bot's codes are too granular or hard to act on, ask Copilot to make sense of them and quantify the split.",
+        "Where both tools land on similar dominant themes, either can be trusted with more confidence.",
+        "If you're not sure and need results quickly, compare the two and draw general conclusions — Copilot can often clarify confusing OED Bot codes."
+      ],
+      example: { text: "On a project with less than a day to deliver preliminary results on half the sample (FUJIFILM, Digi project), the question \"was there anything on these pages that felt unnecessary or distracting?\" produced many granular, hard-to-act-on codes from the OED Bot. Copilot was used to make sense of them, landing on 94% positive/no-issue feedback and 6% negative feedback worth reporting. On a second question about barriers to ordering photobooks online, the OED Bot and Copilot produced closely comparable results without any extra clean-up (roughly: no barrier ~50%, price/cost ~20%, time-consuming ~10%, shipping issues ~5%) — showing that whether the two tools agree out of the box depends on the question." },
+      bestPractice: "The OED Bot doesn't reliably follow scoping instructions like \"deprioritize positive answers\" — don't rely on that kind of instruction working as expected.",
+      prompt: null
+    },
+    {
+      title: "Analyze open-ended responses for themes and verbatims",
+      tools: ["EyeSee OED Bot", "Collab Chatbot", "Copilot"],
+      desc: "The standard, less time-pressured version of open-ended analysis — with two approaches depending on what the report needs.",
+      how: [
+        "Quantified approach: give AI the original question as context, ask it to group responses into themes/codes and calculate the % in each, and pull 2–3 representative verbatims per theme.",
+        "Hypothesis-testing: paste in all the open-ends along with a specific hypothesis, and ask AI to pull out verbatims that support or contradict it.",
+        "Qualitative-only approach: on some projects, coding into strict categories and percentages is skipped altogether — AI is used to help understand the \"why\" behind a behavior, and the finding is reported as qualitative color rather than a coded, numbered breakdown.",
+        "For click-task data too large to browse manually, ask it to extract the main themes the same way you would for open-ends.",
+        "Before sending open-ended data to a client, ask AI to do a quick data-quality pass — checking whether responses look genuine and sensible."
+      ],
+      example: { text: "A common approach: paste all open-ends into the chatbot with a hypothesis and ask it to pull supporting verbatims for the report. On other projects the open-ends are analyzed qualitatively instead — understanding the \"whys\" behind purchase intent, for example — without coding into % categories, sometimes leaving the coded/numbered version out of the report altogether. The same tool is also used to scan a large click-task dataset for main themes when it's too big to browse by hand, and to sanity-check open-ended data quality before it goes to a client." },
+      bestPractice: "Always give AI the original survey question as context before coding — and where possible, also who answered it — without that, groupings drift from what the question was actually asking.",
+      prompt: "Here are all open-ended responses to the question \"[question text]\". Group them into themes, calculate the % of respondents in each theme, and pull 2–3 representative verbatims per theme I could use directly in a report."
+    },
+    {
+      title: "Analyze visual stimuli alongside the data",
+      tools: ["Copilot", "Collab Chatbot"],
+      desc: "Bringing images of the actual stimulus into the conversation with AI, instead of describing it in words — for a tool that can read images, this noticeably improves the quality of the insights it gives back.",
+      how: [
+        "Upload the stimulus image(s) directly into the chat alongside the results you're discussing.",
+        "Ask questions about the results with the visual in view, rather than describing the design in text."
+      ],
+      example: { text: "Uploading images of the stimulus to the chatbot when discussing results — rather than describing the design in words — consistently produces better, more specific insights when the tool can analyze the design visually." },
+      bestPractice: "Don't just describe the stimulus in words — upload the actual image when the tool supports it. The difference in insight quality is noticeable.",
+      prompt: null
+    },
+    {
+      title: "Check that the analysis covers everything the brief asked for",
+      tools: ["Copilot", "Collab Chatbot"],
+      desc: "A coverage check on your own work — comparing the analysis or report draft against the client's brief and KPIs to make sure nothing important got missed.",
+      how: [
+        "Give AI the client brief and the draft analysis or report template.",
+        "Ask it to check whether every objective and KPI from the brief is actually addressed somewhere in the results."
+      ],
+      example: { text: "Before finalizing analysis, the draft is checked against the client's brief specifically to confirm every objective and KPI is covered somewhere in the results — catching gaps before they reach the client rather than after." },
+      bestPractice: "Run this as a distinct check from your regular analysis review — it's asking a different question (\"is everything covered?\") than \"is this correct?\"",
+      prompt: null
+    }
+  ]
+  },
+  {
+  id: "phase5",
+  eyebrow: "Phase 5 · Reporting",
+  name: "Reporting",
+  subtitle: "Turning analysis into a written narrative, an executive summary, and a polished, consistent deck — the most mature area of AI use on the team.",
+  context: "Several genuinely different workflows live here — slide-level insight writing, executive summaries, storyline sense-checks, one-pagers, QA passes, and data-heavy chart building are all separate tasks with separate techniques below.",
+  useCases: [
+    {
+      title: "Draft slide-level insights from results",
+      tools: ["Copilot", "Copilot Agents"],
+      desc: "Writing the actual insight text under a results slide, directly from the data on that slide — the most granular, bottom-up reporting task.",
+      how: [
+        "Give AI the exact data shown on the slide and ask it to write the insight from that data specifically.",
+        "Set explicit style constraints: punchy, to the point, brief — and, separately, no unsupported claims and no bare percentages standing in for an insight.",
+        "Explain the \"why\" behind a finding, not just that a number changed."
+      ],
+      example: { text: "One approach feeds Copilot the results deck plus screenshots and prior studies, with firm guardrails: no percentages in the comments, no insights the data can't support, and always explain the \"why\" — with a dedicated Copilot agent being piloted for this. Another approach: give the tool the exact data from each slide and ask for an insight that's punchy, to the point, and brief." },
+      bestPractice: "Set the constraints before AI drafts anything — tone (punchy/brief), and content rules (no bare %, no unsupported claims, explain why) — rather than editing them out afterwards. Trust it most for a single slide or a handful of slides; on bigger, multi-source analysis it's more prone to real mistakes — mixing up which item actually passed an action standard, using a competitor's numbers as if they were the client's, or over-weighting a secondary attribute — so give those a closer read.",
+      prompt: "Using the attached results and these prior studies as reference, draft the insight for this slide. Keep it punchy, brief, and to the point. Don't use percentages in the comment, don't suggest anything the data doesn't support, and explain why the finding matters, not just what changed."
+    },
+    {
+      title: "Build the executive summary",
+      tools: ["Collab Chatbot"],
+      desc: "Synthesizing an already-built report into a client-ready executive summary — a distinct, top-down task from writing individual slide insights.",
+      how: [
+        "Feed the tool the summary slides you've already prepared for the report.",
+        "Ask it to structure the summary around the client's stated objectives.",
+        "For any recommendation that involves ruling something out, ask it to articulate why the other options weren't recommended.",
+        "Always fact-check the output yourself before it goes to the client."
+      ],
+      example: { text: "On a Colgate-Palmolive planogram test, an executive summary was generated on the day of client delivery, directly from the summary slides already built for the report — highlighting why the recommended scenario was the winning option versus the alternatives. After fact-checking, the team saw faster turnaround, more consistent quality, and a more insight-driven deliverable." },
+      bestPractice: "Feed it your own finished summary slides, not the raw report — the output is far stronger when it's synthesizing your synthesis, not starting from scratch.",
+      prompt: "I have a presentation with multiple slides comparing different scenarios. Please analyze the slides and provide a concise summary that highlights why the '[winning scenario]' is identified as the winning option."
+    },
+    {
+      title: "Sense-check a storyline before writing it up",
+      tools: ["Copilot", "Collab Chatbot"],
+      desc: "Working out the main narrative yourself, then using AI to check for gaps before turning it into slides — and again afterwards to polish the language.",
+      how: [
+        "Decide on the main idea and storyline yourself first.",
+        "Check with AI whether anything important seems to be missing.",
+        "Write the initial version of the storytelling slides yourself.",
+        "Use AI to rework the draft into a more native, insight-style tone, and fix grammar and wording."
+      ],
+      example: { text: "A common sequence: work out the core story yourself, check with Copilot or the chatbot whether anything's been missed, then write the first draft of the storytelling slides yourself before using the tools to make the language more native and insight-style." },
+      bestPractice: "Keep the order fixed: your storyline first, AI as a check second, your own first draft third, AI polish last. Skipping ahead to AI-first tends to produce a generic narrative.",
+      prompt: "Based on this brief and these findings, what are the top 2–3 key insights I should be building my storyline around? Tell me if anything important seems to be missing."
+    },
+    {
+      title: "Turn a complex model or decision tree into a clean visual",
+      tools: ["Copilot"],
+      desc: "Simplifying a complex analytical structure — like a decision tree with many attribute levels — into something a client can actually read, and iterating on the visual with AI.",
+      how: [
+        "Start from the raw, complex version of the tree or model.",
+        "Ask AI to propose a cleaner, more digestible visual layout.",
+        "Iterate — the first suggestion is rarely the final version.",
+        "For decision-tree/codebook coding specifically: define the final list of possible levels for each attribute yourself before asking AI to code SKUs against them — this needs iteration and up-front work."
+      ],
+      example: { text: "On a Vita Coco decision-tree study, a complex tree was made significantly more digestible by asking AI to propose a cleaner visual, then iterating from the original structure to an AI-suggested layout to a final version used in the report." },
+      bestPractice: "Don't ask AI to invent the attribute levels themselves — define the final list first, then use AI for the coding and the visual simplification.",
+      prompt: null
+    },
+    {
+      title: "Turn a full deck into a one-pager or summary slide",
+      tools: ["Copilot"],
+      desc: "Aggregating several slides — a KPI dashboard, a set of recommendations — into one clean summary slide for a time-pressed audience.",
+      how: [
+        "Feed AI the set of slides you want condensed.",
+        "Ask for a one-pager or a 1–3 slide summary version.",
+        "Always check the numbers afterwards — this is the step most likely to introduce a small error."
+      ],
+      example: { text: "Copilot is used to build one-pagers or alternatives to KPI dashboard slides, and to condense multiple recommendation slides into a 1–3 slide summary — with a standing rule to check the numbers, always." },
+      bestPractice: "Always re-check every number that ends up on the condensed slide — this is the single step most likely to quietly introduce an error.",
+      prompt: null
+    },
+    {
+      title: "Run a full-deck consistency and grammar pass",
+      tools: ["Copilot"],
+      desc: "A pure QA pass across the whole report — grammar, typos, and contradictions between sections — kept separate from writing the insights themselves.",
+      how: [
+        "Run the whole deck through Copilot (integrated directly in PowerPoint) in one pass, not slide by slide.",
+        "Ask it to flag inconsistencies or contradictions between different sections of the report.",
+        "Use it for straightforward grammar and typo checks as a final step before sending."
+      ],
+      example: { text: "Copilot's PowerPoint integration is used to review a finished deck in one pass and flag contradictions between slides — something manual section-by-section review tends to miss." },
+      bestPractice: "Do this as one full-deck pass at the very end, not per-slide as you go — contradictions between sections are exactly what a single pass catches and a rolling edit misses. Be careful running it while you're still actively editing — it can overwrite changes you're making at the same time.",
+      prompt: null
+    },
+    {
+      title: "Build charts, tables and cross-group comparisons for data-heavy reports",
+      tools: ["Copilot"],
+      desc: "Building the visual and analytical backbone of a data-intensive deliverable — charts, winning-claims tables, and comparisons across multiple splits or groups.",
+      how: [
+        "Provide the raw data plus a reference image and ask AI to build the chart from scratch — e.g. \"replicate the reference image\" or \"color the data labels according to column X.\"",
+        "Ask it to extract all items above average on both axes into a table, with their relevant metrics.",
+        "Ask it to repeat the same chart or table for the next data cut or group.",
+        "For cross-group analysis, ask it to compare the charts across all groups and identify items that are \"winning\" across all of them, or only in specific ones.",
+        "For a fully dynamic version, build an Excel model where every output updates automatically when the raw data changes.",
+        "Periodically ask AI to stop and re-verify all conclusions so far, as if it were a skeptical client."
+      ],
+      example: { text: "For one of the most data-heavy, visually complex deliverable types at EyeSee — claims testing — charts are built from data plus a reference image, winning-claims tables are auto-generated, the same format is repeated across splits, and cross-group analysis finds claims that win everywhere or show significant differences between groups. A fully dynamic Excel model updates automatically from raw data, with a standing habit of periodically asking Copilot to \"stop and verify everything so far as if you were a skeptical client.\"" },
+      bestPractice: "Build in a periodic checkpoint — ask AI to re-verify its own conclusions so far, playing the role of a skeptical client — rather than trusting a long chain of chart-building steps unchecked.",
+      prompt: null
+    },
+    {
+      title: "Find recurring patterns across many past reports",
+      tools: ["Sales Helper"],
+      desc: "Mining a set of past reports for cross-project patterns — either to build category-level guidance, or to benchmark a new study against similar past work.",
+      how: [
+        "Gather the relevant past reports into your POD's Sales Helper folder, named clearly by client/topic/date.",
+        "Always reference the specific folder or report(s) by name in your prompt — otherwise the agent may pull in unrelated material.",
+        "Ask it to summarize recurring patterns across the set, in table form, with examples and source references.",
+        "For benchmarking, name the new report plus the specific prior reports you want it compared against, and ask what's similar and what's different.",
+        "Explore and understand your own data first — use Sales Helper to summarize and compare, not to form your first read."
+      ],
+      example: { text: "For a set of 15+ OTC claims-testing reports (Opella), the key-conclusions slide from each report was uploaded and Sales Helper was asked to identify recurring winning and losing claim patterns in a table with examples and source references — surfacing patterns like dual-benefit claims outperforming single-benefit ones, and quantified claims beating vague ones without over-promising. Separately, for a new UX study (StubHub), Sales Helper was given the exact filenames of several prior digital UX studies and asked to compare what was similar and different — then more prior reports were added and the comparison repeated." },
+      bestPractice: "Name the exact folder or report filenames in your prompt — vague references let the agent mix in unrelated projects.",
+      prompt: "Summarize findings from the reports in folder [X] and provide a list of key insights/patterns discovered, with examples. Create an actionable recommendation for each insight, and note any commonalities or differences between markets or categories."
+    },
+    {
+      title: "Create visual content and mockups — with a clear caveat",
+      tools: ["Copilot"],
+      desc: "Using AI to produce report visuals or an illustrative mockup of a design recommendation. Real experience here is mixed — this is presented honestly, including where it fell short.",
+      how: [
+        "For reworked pack designs or proposed solutions, ask for an edited version showing the recommended change.",
+        "For a purely inspirational concept (not tied to an existing stimulus), ask AI to generate a new pack design from a list of prompted features, purely to illustrate an idea on a slide.",
+        "Treat the result as an illustrative aid for a client conversation, never as a creative brief or final design direction.",
+        "Best suited to one specific tweak (e.g. making one element more prominent), not a full redesign."
+      ],
+      example: { text: "One attempt to edit a stimulus design according to a set of recommendations — to show the client visually — didn't reach a quality bar worth using in an actual report; other AI tools might handle it better. A separate live demo (a BBQ seasoning pack redesign) took six iterations: shelf standout and message visibility improved, but the pack lost its original premium feel. On other projects, AI has instead been used to generate a brand-new pack concept from scratch, based on a set of prompted features, purely as an inspirational slide for the client rather than an edit of a real stimulus. The conclusion across all of these: useful as an illustrative aid with a clear disclaimer, not as final design direction — and best for one specific tweak rather than a full redesign." },
+      bestPractice: "Always disclose that an AI-edited mockup is illustrative only, not a creative brief — and set expectations that it's better for one targeted tweak than a full redesign.",
+      prompt: null
+    },
+    {
+      title: "Clean up product images for virtual shelves",
+      tools: ["Copilot"],
+      desc: "Turning a low-resolution, angled, or shadowed product photo into a clean, usable asset for a virtual shelf — tested outside the standard toolkit as a design-team workflow.",
+      how: [
+        "Upload the available product image to an AI image tool.",
+        "Ask for a clean frontal view on a white background, keeping all original graphics intact.",
+        "Apply at scale across many SKUs, including awkward cases like large packages that sit on their bottom face on shelf."
+      ],
+      example: { text: "An AI image tool (tested outside Copilot/Collab Chatbot) was used to clean up product images for virtual shelf creation — including large, bottom-facing packages that are otherwise hard to shoot cleanly — producing higher-quality visuals the design team could use directly instead of reconstructing them by hand. A related use: removing products from a box or tray image entirely (to show empty packaging) while keeping the tray, display material, box design, and original shadows and lighting untouched." },
+      bestPractice: "This workflow was validated on difficult SKU types (bottom-facing, large packaging) — worth checking whether Design already has it in use before rebuilding it. Be as specific as the task needs — spell out exactly what must stay untouched (logos, text, structure, lighting) alongside what should change.",
+      prompt: "Make this tilted packaging appear front-facing. Keep all text, logos, and graphics intact. Set the background to pure white."
+    }
+  ]
+  },
+  {
+  id: "phase6",
+  eyebrow: "Phase 6 · Presentation",
+  name: "Presentation",
+  subtitle: "Preparing to deliver the story out loud — speaker notes, voiceover scripts, and anticipating what the client will ask.",
+  context: "Valuable when there's time to use it, but tight timelines mean this phase gets AI support less consistently than reporting does.",
+  useCases: [
+    {
+      title: "Generate speaker notes or a voiceover script in PPT notes",
+      tools: ["Copilot"],
+      desc: "Using Copilot inside PowerPoint to draft the spoken narrative for a deck — including full voiceover-style scripts, not just bullet reminders.",
+      how: [
+        "Specify slide numbers, the tone you want (e.g. conversational but professional), and a target length per slide (e.g. 2–3 lines).",
+        "Give contextual notes on what each slide should emphasize.",
+        "Ask for smooth transitions both between slides and between key points within a slide.",
+        "Always do a personal read-through afterwards to adjust for your own speaking style."
+      ],
+      example: { text: "Ahead of a high-stakes client presentation joined at short notice — the evening before, following a tense prior round with mixed stakeholders — speaker notes for the full deck were generated in about 40 minutes using detailed, slide-by-slide prompts (target tone, length per slide, and what to emphasize). The client's feedback on the re-test: \"I was really satisfied with the report on this re-test – the results were structured in a clear way and presented to the team with a clear and actionable delivery.\" A similar approach was used separately to draft a storytelling script for a 12-minute expert-talk presentation. Another detailed real prompt, used for a full-deck voiceover: place it directly in the notes, skip hidden and separator slides, keep any existing notes/comments, target about 30 minutes total, weave in a couple of relevant recent trends with a source so they can be checked, add a joke or two, and keep the tone professional, friendly and polite." },
+      bestPractice: "Specify the voice you want (tone, length per slide, what to emphasize) as explicitly as you would brief a junior colleague — vague prompts produce generic notes.",
+      prompt: "I'd like to make speaker's notes for some slides, starting from slide [X]. The deck is long but presentation time is limited — aim for 2–3 conversational-style lines per slide, professional but still relaxed. On slide [X], cover [what to emphasize]. Note: the data shown includes [context on what's included/excluded]."
+    },
+    {
+      title: "Beautify, simplify and summarize slides for delivery",
+      tools: ["Copilot"],
+      desc: "A lighter pass than a full one-pager rebuild (see Reporting) — tightening slide content and visuals specifically so they present well live.",
+      how: [
+        "Ask AI to simplify dense slide text down to what's needed for a live audience.",
+        "Ask for visual tightening or reformatting so the slide reads well when presented, not just when read."
+      ],
+      example: { text: "Copilot is used for beautifying, simplifying and summarizing slides specifically ahead of presenting them — a lighter-touch step distinct from the one-pager and executive-summary work done earlier in reporting." },
+      bestPractice: null,
+      prompt: null
+    },
+    {
+      title: "Prepare for client questions before the meeting",
+      tools: ["Copilot"],
+      desc: "Rehearsing the toughest likely questions before walking into a live client presentation.",
+      how: [
+        "Ask AI directly what questions the client might ask about the results.",
+        "Ask what a strong answer to each of those questions could look like.",
+        "For the delivery itself, try reading the presentation out loud to AI and asking for feedback on clarity, as if from the client's perspective."
+      ],
+      example: { text: "A simple rehearsal habit: ask Copilot what the client could ask, and what the answers could be — used purely as rehearsal, not as a script to read from. Some also practice the actual delivery out loud with AI listening, asking for feedback on whether the message lands clearly from a client's point of view." },
+      bestPractice: "Use this to prepare, not to script — walk in having thought through the hard questions yourself, rather than reading AI's answers verbatim.",
+      prompt: "Based on this report, what questions might the client ask, and what would be strong answers to each?"
+    }
+  ]
+  },
+  {
+  id: "phase7",
+  eyebrow: "Phase 7 · Post-Project",
+  name: "Post-Project Evaluation",
+  subtitle: "Capturing learnings once a project wraps, and making them reusable for the next one.",
+  context: "The other low-adoption phase alongside Fieldwork for day-to-day handover — but cross-project pattern-mining (below) is a genuinely mature practice worth spreading further.",
+  useCases: [
+    {
+      title: "Reuse checklists and handover material from past projects",
+      tools: ["Sales Helper"],
+      desc: "Starting a new checklist or handover document from a similar past project instead of a blank page.",
+      how: [
+        "Search Sales Helper for a similar past project.",
+        "Pull up its checklist or handover manual as a starting point and adapt it."
+      ],
+      example: { text: "Sales Helper is used to retrieve checklists and handover manuals from previous, similar projects rather than starting from scratch each time." },
+      bestPractice: "Before writing a checklist or handover doc from zero, check whether a similar past project already has one you can adapt.",
+      prompt: null
+    }
+  ]
+  }
+];
+
+const EXTRA_SECTIONS = [
+  {
+    id: "emerging",
+    eyebrow: "Cross-phase",
+    name: "Emerging & Cross-Phase Practices",
+    subtitle: "Habits that don't belong to a single phase, and one piloted approach worth watching as it matures.",
+    context: "These show up across multiple phases and multiple people — a sign they're worth recognising as practices in their own right, even without a single home in the process.",
+    useCases: [
+      {
+        title: "Draft in your own language, then translate and polish into English",
+        tools: ["Copilot", "Collab Chatbot"],
+        desc: "A common workflow for non-native English speakers, used for emails, insights and slide content alike.",
+        how: [
+          "Write the initial version in your own language.",
+          "Ask Copilot or the chatbot to translate it into English, keep a consistent tone, and correct grammar.",
+          "This lets you focus on substance and message rather than language accuracy."
+        ],
+        example: { text: "A common workflow: draft emails and report content in your own language first, then use Copilot or the chatbot to translate and polish into natural English." },
+        bestPractice: "Think and draft fast in your first language, then translate and polish — rather than composing directly in a second language under time pressure.",
+        prompt: "Translate this into English, keep a natural, confident tone, and fix any grammar issues: [draft]"
+      },
+      {
+        title: "Keep one running AI chat thread per project",
+        tools: ["Copilot"],
+        desc: "Instead of starting a fresh conversation for each task, uploading a project's materials once and continuing the same thread for everything on that project.",
+        how: [
+          "Upload the brief, email context, and initial notes into one chat at the start of the project.",
+          "Keep using that same thread for later tasks on the project — questionnaire drafting, planning, emails — so the context never has to be re-explained.",
+          "Update the thread with new materials as the project moves forward rather than starting over."
+        ],
+        example: { text: "One approach uploads all of a project's initial materials, email context, and notes into a single chat, then keeps using that same conversation for everything else on the project — questionnaire work, planning, and client emails — rather than starting fresh each time." },
+        bestPractice: "This trades off against the \"restart when topics shift\" habit used elsewhere — it works best when the thread stays genuinely about one project, not once it starts accumulating unrelated tasks.",
+        prompt: null
+      },
+      {
+        title: "Look up client terminology or acronyms quickly",
+        tools: ["Copilot"],
+        desc: "A fast, low-effort habit: checking what a client-specific term or abbreviation means, on the spot.",
+        how: [
+          "Ask AI directly to explain a client's terminology or an acronym found in a brief or email."
+        ],
+        example: { text: "AI is used to check client terminology or what an abbreviation means, rather than pausing to ask a colleague or the client directly." },
+        bestPractice: null,
+        prompt: null
+      },
+      {
+        title: "Build or use a Copilot agent for a recurring report type",
+        tools: ["Copilot Agents"],
+        desc: "Instead of a general-purpose chat, building a narrower agent tuned to one specific, repeatable deliverable.",
+        how: [
+          "Define the agent's task narrowly (e.g. one specific report type, or a fixed persona like \"researcher\" or \"analyst\").",
+          "Pilot it on real projects before treating it as a default workflow.",
+          "Keep the same human-review discipline as any other AI output — an agent doesn't remove the need to check its work."
+        ],
+        example: { text: "One pilot uses a Copilot-based agent to help draft a recurring report type, with attention to licensing limitations and the importance of not blindly trusting the output. Separately, one team member is piloting a Copilot agent for slide-drafting, and another uses distinct \"researcher\" and \"analyst\" agent personas within Copilot to get different angles on the same data." },
+        bestPractice: "Treat an agent as a pilot, not a finished tool — it still needs the same fact-checking and licensing awareness as any other AI use case.",
+        prompt: null
+      },
+      {
+        title: "Templatize your category or brand research prompts",
+        tools: ["Copilot"],
+        desc: "An idea raised but not yet built: turning the recurring \"understand this category/brand\" conversation into a reusable template rather than starting fresh each project.",
+        how: [
+          "Notice the pattern: most category/brand research conversations with AI follow a similar shape project to project.",
+          "Save the prompt sequence that works well and reuse it as a starting template."
+        ],
+        example: { text: "Category/brand research conversations with AI tend to follow a similar pattern every project — a good candidate for a shared, reusable template rather than a fresh conversation each time." },
+        bestPractice: "This is a genuine opportunity, not yet a built workflow — worth prioritizing if the team wants a quick, shared win.",
+        prompt: null
+      }
+    ]
+  },
+  {
+    id: "prompts",
+    eyebrow: "Reference",
+    name: "Prompt Library",
+    subtitle: "A shared, growing collection of prompts that worked — organized by tool and use case.",
+    context: null,
+    isPromptLibrary: true,
+    linkUrl: "https://prompts.eyesee-ai.com/",
+    linkLabel: "Open the Prompt Library →"
+  },
+  {
+    id: "glossary",
+    eyebrow: "Reference",
+    name: "Tools Glossary",
+    subtitle: "The standardized set of AI tools referenced across this playbook, and what each is actually used for.",
+    context: null,
+    isGlossary: true
+  }
+];
+
+/* ============================================================
+   ONBOARDING CONTENT
+============================================================ */
+const ONBOARDING = {
+  id: "start",
+  eyebrow: "Get started",
+  name: "How to Use This Playbook",
+  subtitle: "A short guide before you dive in.",
+  context: null,
+  blocks: [
+    { title: "What this is", body: "A working record of how the team is actually using AI, phase by phase — real tasks, real tools, and real examples from live projects. AI isn't replacing the team's expertise here — it's handling the mechanical, repetitive parts so people can focus on judgment, strategy and client relationships." },
+    { title: "How to move around", body: "Work through the phases in order down the left, from Preparation through Post-Project Evaluation, or jump straight to the one you need. Each phase mirrors a real stage of a project." },
+    { title: "What's inside each card", body: "Click a task to open it. Inside you'll find how colleagues actually do it step by step, a real example from an actual project, and — where one exists — a best-practice tip and the prompt that was used." },
+    { title: "Finding something fast", body: "Use the search bar to look across every phase at once, or click a tool name in the filter bar to see everywhere it's used, regardless of which phase you're currently viewing." }
+  ],
+  rule: "One rule that applies everywhere in this playbook: only use licensed tools — Copilot, Collab Chatbot, Sales Helper — for anything involving client-confidential material. Public, unlicensed tools should never see client data. And always start with your own read of the data — AI checks and refines, it doesn't decide first.",
+  note: "Looking for ready-to-use prompts rather than workflows? Check the Prompt Library under \"More\" in the sidebar. Tool limitations and improvement requests raised by the team are tracked separately in the AI R&D Backlog, so this playbook can stay focused on what's working."
+};
+
+/* ============================================================
+   STATE & RENDER
+============================================================ */
+let currentSectionId = "start";
+let activeTag = null;
+let searchQuery = "";
+
+const ALL_SECTIONS = [ONBOARDING, ...PHASES, ...EXTRA_SECTIONS];
+
+function renderNav(){
+  const navStart = document.getElementById('navStart');
+  const navPhases = document.getElementById('navPhases');
+  const navExtra = document.getElementById('navExtra');
+
+  navStart.innerHTML = `
+    <li class="nav-item ${currentSectionId==='start'?'active':''}" data-id="start">
+      <span class="nav-num">★</span>
+      <span>How to Use This</span>
+    </li>`;
+
+  navPhases.innerHTML = PHASES.map((p, i) => `
+    <li class="nav-item ${p.id===currentSectionId?'active':''}" data-id="${p.id}">
+      <span class="nav-num">${i+1}</span>
+      <span>${p.name}</span>
+      <span class="nav-count">${p.useCases.length}</span>
+    </li>`).join('');
+
+  navExtra.innerHTML = EXTRA_SECTIONS.map(p => `
+    <li class="nav-item ${p.id===currentSectionId?'active':''}" data-id="${p.id}">
+      <span class="nav-num">${p.isGlossary ? '⚡' : (p.isPromptLibrary ? '✎' : '＋')}</span>
+      <span>${p.name}</span>
+    </li>`).join('');
+
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.addEventListener('click', () => {
+      currentSectionId = el.getAttribute('data-id');
+      searchQuery = "";
+      document.getElementById('searchInput').value = "";
+      render();
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  });
+}
+
+function getAllToolNames(){
+  return Object.keys(TOOLS);
+}
+
+function renderTagBar(){
+  const bar = document.getElementById('tagFilterBar');
+  bar.innerHTML = getAllToolNames().map(name => `
+    <span class="tag-chip ${activeTag===name?'active':''}" data-tool="${name}">${name}</span>
+  `).join('');
+  bar.querySelectorAll('.tag-chip').forEach(el => {
+    el.addEventListener('click', () => {
+      const t = el.getAttribute('data-tool');
+      activeTag = (activeTag === t) ? null : t;
+      if (currentSectionId === 'start' || currentSectionId === 'glossary' || currentSectionId === 'prompts'){
+        currentSectionId = PHASES[0] ? PHASES[0].id : currentSectionId;
+      }
+      render();
+    });
+  });
+}
+
+function matchesFilters(uc){
+  if (activeTag && !uc.tools.includes(activeTag)) return false;
+  if (searchQuery){
+    const q = searchQuery.toLowerCase();
+    const hay = [uc.title, uc.desc, ...(uc.tools||[]), ...(uc.how||[]), uc.bestPractice||"", uc.prompt||"", uc.example ? uc.example.text : ""].join(" ").toLowerCase();
+    if (!hay.includes(q)) return false;
+  }
+  return true;
+}
+
+function renderUseCaseCard(uc){
+  const toolsHtml = uc.tools.map(toolTagHTML).join('');
+  const howHtml = uc.how && uc.how.length ? `
+    <div>
+      <p class="body-section-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        HOW IT'S DONE
+      </p>
+      <ul class="practice-list">${uc.how.map(h=>`<li>${h}</li>`).join('')}</ul>
+    </div>` : '';
+  const exampleHtml = uc.example ? `
+    <div>
+      <p class="body-section-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 5v-2M12 21v-2M5 12h-2M21 12h-2M17.66 6.34l1.42-1.42M4.92 19.08l1.42-1.42M6.34 6.34L4.92 4.92M19.08 19.08l-1.42-1.42"/></svg>
+        REAL EXAMPLE
+      </p>
+      <div class="example-box">${uc.example.text}</div>
+    </div>` : '';
+  const bestHtml = uc.bestPractice ? `
+    <div>
+      <p class="body-section-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        BEST PRACTICE
+      </p>
+      <div class="best-practice-box">${uc.bestPractice}</div>
+    </div>` : '';
+  const promptHtml = uc.prompt ? `
+    <div>
+      <p class="body-section-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        EXAMPLE PROMPT
+      </p>
+      <div class="prompt-box">${uc.prompt}</div>
+    </div>` : '';
+
+  return `
+    <div class="usecase-card">
+      <div class="usecase-head">
+        <div class="usecase-chevron">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="usecase-title-block">
+          <p class="usecase-title">${uc.title}</p>
+          <p class="usecase-desc">${uc.desc}</p>
+          <div class="tool-tags">${toolsHtml}</div>
+        </div>
+      </div>
+      <div class="usecase-body">
+        <div class="usecase-body-inner">
+          ${howHtml}
+          ${exampleHtml}
+          ${bestHtml}
+          ${promptHtml}
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderGlossary(){
+  const grid = getAllToolNames().map(name => {
+    const t = TOOLS[name];
+    return `
+      <div class="glossary-card">
+        <div class="glossary-tool-name"><span class="glossary-dot" style="background:${t.color}"></span>${name}</div>
+        <div class="glossary-desc">${t.desc}</div>
+      </div>`;
+  }).join('');
+  return `<div class="glossary-grid">${grid}</div>`;
+}
+
+function renderOnboarding(){
+  let html = ONBOARDING.blocks.map((b, i) => `
+    <div class="onboard-card">
+      <h3><span class="onboard-step-num">${i+1}</span>${b.title}</h3>
+      <p>${b.body}</p>
+    </div>`).join('');
+  html += `<div class="rule-box">${ONBOARDING.rule}</div>`;
+  html += `<div class="rule-box" style="background:rgba(255,255,255,0.03); border-color:var(--card-border); color:rgba(241,233,255,0.65);">${ONBOARDING.note}</div>`;
+  return html;
+}
+
+function renderPromptLibrary(section){
+  return `
+    <div class="onboard-block">
+      <div class="onboard-card">
+        <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--es-sky)"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>&nbsp; ${section.name}</h3>
+        <p>The prompts inside this playbook are a starting point. For the full, continuously updated collection — organized by tool and use case, with prompts the team has actually tried — use the shared Prompt Library.</p>
+      </div>
+      <div class="rule-box">
+        <a href="${section.linkUrl}" target="_blank" rel="noopener" style="color:var(--es-sky); font-weight:700; text-decoration:none; font-size:15px;">${section.linkLabel}</a>
+        <div style="margin-top:8px; font-size:13px; color:rgba(241,233,255,0.6);">${section.linkUrl}</div>
+      </div>
+    </div>`;
+}
+
+function render(){
+  renderNav();
+
+  const section = ALL_SECTIONS.find(s => s.id === currentSectionId);
+  document.getElementById('phaseEyebrow').textContent = section.eyebrow;
+  document.getElementById('phaseTitle').textContent = section.name;
+  document.getElementById('phaseSubtitle').textContent = section.subtitle;
+
+  const ctxEl = document.getElementById('phaseContext');
+  const onboardGrid = document.getElementById('onboardGrid');
+  const grid = document.getElementById('usecaseGrid');
+  const metaEl = document.getElementById('resultsMeta');
+  const controlsBlock = document.getElementById('controlsBlock');
+  const tagBar = document.getElementById('tagFilterBar');
+
+  if (section.id === 'start'){
+    controlsBlock.style.display = 'none';
+    tagBar.style.display = 'none';
+    ctxEl.style.display = 'none';
+    metaEl.style.display = 'none';
+    grid.style.display = 'none';
+    onboardGrid.style.display = 'flex';
+    onboardGrid.innerHTML = renderOnboarding();
+    return;
+  }
+
+  if (section.isPromptLibrary){
+    controlsBlock.style.display = 'none';
+    tagBar.style.display = 'none';
+    ctxEl.style.display = 'none';
+    metaEl.style.display = 'none';
+    grid.style.display = 'none';
+    onboardGrid.style.display = 'flex';
+    onboardGrid.innerHTML = renderPromptLibrary(section);
+    return;
+  }
+
+  onboardGrid.style.display = 'none';
+  grid.style.display = 'flex';
+  controlsBlock.style.display = 'flex';
+  tagBar.style.display = 'flex';
+  renderTagBar();
+
+  if (section.context && !searchQuery && !activeTag){
+    ctxEl.style.display = 'block';
+    ctxEl.textContent = section.context;
+  } else {
+    ctxEl.style.display = 'none';
+  }
+
+  if (section.isGlossary){
+    metaEl.style.display = 'none';
+    grid.innerHTML = renderGlossary();
+    return;
+  }
+
+  let pool = [];
+  if (searchQuery || activeTag){
+    PHASES.concat(EXTRA_SECTIONS.filter(s=>!s.isGlossary && !s.isPromptLibrary)).forEach(sec => {
+      (sec.useCases||[]).forEach(uc => pool.push({uc, sectionName: sec.name}));
+    });
+  } else {
+    pool = section.useCases.map(uc => ({uc, sectionName: section.name}));
+  }
+
+  const filtered = pool.filter(item => matchesFilters(item.uc));
+
+  if (searchQuery || activeTag){
+    metaEl.style.display = 'block';
+    metaEl.innerHTML = `${filtered.length} task${filtered.length===1?'':'s'} found across the whole playbook` +
+      (searchQuery ? ` for "<strong>${searchQuery}</strong>"` : '') +
+      (activeTag ? ` using <strong>${activeTag}</strong>` : '') +
+      `<span class="clear-search" id="clearSearchBtn">Clear</span>`;
+  } else {
+    metaEl.style.display = 'none';
+  }
+
+  if (filtered.length === 0){
+    grid.innerHTML = `<div class="no-results">No tasks match your search. Try a different keyword or clear the filter.</div>`;
+  } else {
+    grid.innerHTML = filtered.map((item) => {
+      const showBadge = (searchQuery || activeTag) && item.sectionName !== section.name;
+      let card = renderUseCaseCard(item.uc);
+      if (showBadge){
+        card = card.replace('<div class="usecase-title-block">', `<div class="usecase-title-block"><span style="font-size:11px;color:rgba(241,233,255,0.4);font-weight:700;">${item.sectionName.toUpperCase()}</span>`);
+      }
+      return card;
+    }).join('');
+  }
+
+  document.querySelectorAll('.usecase-card').forEach(card => {
+    card.querySelector('.usecase-head').addEventListener('click', () => {
+      card.classList.toggle('open');
+    });
+  });
+
+  const clearBtn = document.getElementById('clearSearchBtn');
+  if (clearBtn){
+    clearBtn.addEventListener('click', () => {
+      searchQuery = "";
+      activeTag = null;
+      document.getElementById('searchInput').value = "";
+      render();
+    });
+  }
+}
+
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  searchQuery = e.target.value.trim();
+  render();
+});
+
+render();
+
+</script>
+</body>
+</html>
