@@ -490,9 +490,109 @@ footer.app-footer {
   color: rgba(241,233,255,0.35);
   line-height: 1.6;
 }
+/* ── Password gate ── */
+.pw-gate {
+  position: fixed; inset: 0; z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--es-dark);
+  padding: 20px;
+}
+.pw-card {
+  width: 100%; max-width: 360px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 32px 28px;
+  text-align: center;
+}
+.pw-card .pw-logo { font-size: 22px; font-weight: 700; color: var(--es-light); margin-bottom: 4px; font-family: Roboto, Arial, sans-serif; }
+.pw-card .pw-logo .dot { color: var(--es-brand); }
+.pw-card h2 { font-size: 16px; font-weight: 500; color: rgba(241,233,255,0.5); margin: 4px 0 22px; font-family: Roboto, Arial, sans-serif; }
+.pw-field { position: relative; margin-bottom: 14px; }
+.pw-field input {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 10px;
+  padding: 12px 54px 12px 14px;
+  font-size: 16px;
+  color: var(--es-light);
+  font-family: Roboto, Arial, sans-serif;
+  outline: none;
+}
+.pw-field input:focus { border-color: rgba(255,255,255,0.3); }
+.pw-toggle {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer;
+  color: rgba(241,233,255,0.4); font-size: 13px; font-family: Roboto, Arial, sans-serif;
+  padding: 4px;
+}
+.pw-toggle:hover { color: var(--es-light); }
+.pw-submit {
+  width: 100%;
+  background: var(--es-brand);
+  color: var(--es-white);
+  border: none; border-radius: 10px;
+  padding: 12px;
+  font-size: 16px; font-weight: 700;
+  font-family: Roboto, Arial, sans-serif;
+  cursor: pointer;
+}
+.pw-submit:hover { opacity: 0.9; }
+.pw-error {
+  display: none;
+  margin-top: 12px;
+  color: var(--es-brand);
+  font-size: 14px;
+  font-family: Roboto, Arial, sans-serif;
+}
 </style>
 </head>
 <body>
+<div class="pw-gate" id="pw-gate">
+  <div class="pw-card">
+    <div class="pw-logo">eye<span class="dot">&middot;</span>see</div>
+    <h2>Enter password to continue</h2>
+    <div class="pw-field">
+      <input type="password" id="pw-input" placeholder="Password" autocomplete="off" spellcheck="false">
+      <button type="button" class="pw-toggle" id="pw-toggle">Show</button>
+    </div>
+    <button type="button" class="pw-submit" id="pw-submit">Enter</button>
+    <div class="pw-error" id="pw-error">Incorrect password &mdash; try again.</div>
+  </div>
+</div>
+<script>
+(function(){
+  var KEY = 'es_pw_unlocked_v1';
+  var PASSWORD = 'PromptSee!';
+  var gate = document.getElementById('pw-gate');
+  if (localStorage.getItem(KEY) === 'yes') {
+    gate.remove();
+  } else {
+    var input = document.getElementById('pw-input');
+    var toggle = document.getElementById('pw-toggle');
+    var err = document.getElementById('pw-error');
+    function tryUnlock() {
+      if (input.value === PASSWORD) {
+        localStorage.setItem(KEY, 'yes');
+        gate.remove();
+      } else {
+        err.style.display = 'block';
+        input.value = '';
+        input.focus();
+      }
+    }
+    document.getElementById('pw-submit').onclick = tryUnlock;
+    input.addEventListener('keydown', function(e){ if (e.key === 'Enter') tryUnlock(); });
+    toggle.onclick = function(){
+      var showing = input.type === 'text';
+      input.type = showing ? 'password' : 'text';
+      toggle.textContent = showing ? 'Show' : 'Hide';
+    };
+    input.focus();
+  }
+})();
+</script>
 
 <div class="app">
   <aside class="sidebar">
