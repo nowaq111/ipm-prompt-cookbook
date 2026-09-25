@@ -647,12 +647,12 @@ footer.app-footer {
    TOOL DEFINITIONS (standardized)
 ============================================================ */
 const TOOLS = {
-  "Copilot":            { color: "#7000E0", desc: "Microsoft 365 Copilot, integrated into Word, Excel and PowerPoint. The most widely used AI tool across the team and every phase of the process." },
-  "Collab Chatbot":      { color: "#36AFFF", desc: "EyeSee's own AI chatbot (internally also called \"Agentic AI\"), built into the Collab platform and trained on EyeSee's business and ways of working. Used across questionnaire wording, translation, executive summaries, and drafting." },
+  "Copilot":            { color: "#7000E0", link: "https://m365.cloud.microsoft/chat", displayName: "Copilot (Microsoft 365 Copilot)", desc: "Microsoft 365 Copilot is an AI-powered productivity assistant integrated across the Microsoft 365 ecosystem, including Chat, Outlook, Teams, Word, Excel, PowerPoint, OneNote, and other Microsoft applications. It helps users search, summarize, analyze, create, and communicate more efficiently by combining advanced AI capabilities with access to organizational data, such as emails, meetings, documents, and chats (subject to user permissions)." },
+  "Collab Chatbot":      { color: "#36AFFF", link: "https://app.eyesee-collab.com/chatbot-agentic", desc: "Accessible by all employees via Collab.<br>Employees can use the Agentic Bot to ask general questions and get answers (e.g. proofreading, translation, text improvements, summarizing, etc.), as well as to analyze ETL and other files.<br><br>Some concrete ways you can get value from it:<br>— <strong>Pack report analysis</strong>: use it when you want to quickly summarize pack testing results, extract highlights, or spot patterns and insights for reporting.<br>— <strong>Metadata analysis</strong>: use it when you want to do comparative analysis of ETL files from different studies.<br>— <strong>Text refining and proofreading</strong>: rewrite or polish emails, reports, Slack messages, and presentations. Also useful for translations and summaries.<br>— <strong>File analysis</strong>: upload documents, presentations, images, and data files, including ETL formats, and ask questions directly on top of them. Downloads are currently supported in Excel format." },
   "Sales Helper":        { color: "#F275FF", desc: "Internal EyeSee agent (SharePoint → Client Operations). Each POD has its own Sales Helper folder and agent link — no Copilot license or login needed. Best for summarizing and finding patterns across multiple past reports. Always reference the specific folder or report(s) in your prompt, or it may pull in unrelated material." },
-  "EyeSee OED Bot":      { color: "#1FAF44", desc: "EyeSee's dedicated tool for open-ended data (OED) coding and analysis." },
+  "EyeSee OED Bot":      { color: "#1FAF44", link: "https://ml-framework.eyesee-devops.com/", desc: "EyeSee's dedicated tool for open-ended data (OED) coding and analysis." },
   "Copilot Agents":      { color: "#7000E0", desc: "Custom Copilot agents built for a specific recurring task (e.g. drafting a report type, or a \"researcher\"/\"analyst\" persona). Still being piloted rather than rolled out team-wide." },
-  "Microsoft Teams transcription": { color: "#000AC7", desc: "Built-in Microsoft Teams meeting transcription and Copilot recap, used for capturing notes and summaries from calls. (Fathom is being piloted separately and isn't part of the standard toolkit yet.)" }
+  "Microsoft Teams transcription": { color: "#000AC7", desc: "Built-in Microsoft Teams meeting transcription and Copilot recap, used for capturing notes and summaries from calls (requires a Copilot license)." }
 };
 
 function toolTagHTML(name){
@@ -1359,9 +1359,13 @@ function renderUseCaseCard(uc){
 function renderGlossary(){
   const grid = getAllToolNames().map(name => {
     const t = TOOLS[name];
+    const label = t.displayName || name;
+    const nameHtml = t.link
+      ? `<a href="${t.link}" target="_blank" rel="noopener" style="color:inherit; text-decoration:underline;">${label}</a>`
+      : label;
     return `
       <div class="glossary-card">
-        <div class="glossary-tool-name"><span class="glossary-dot" style="background:${t.color}"></span>${name}</div>
+        <div class="glossary-tool-name"><span class="glossary-dot" style="background:${t.color}"></span>${nameHtml}</div>
         <div class="glossary-desc">${t.desc}</div>
       </div>`;
   }).join('');
